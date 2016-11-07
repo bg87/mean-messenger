@@ -1,3 +1,5 @@
+# This project is a simple messaging app built with the MEAN stack with angular2
+
 *How to use:
 
 1) Navigate into the folder (in the command line/ terminal)

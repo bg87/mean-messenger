@@ -15,7 +15,7 @@ a:active {
 }
 
 a.danger {
-  color: red;
+  color: #c36974;
 }
 
 .spacing {
@@ -23,5 +23,5 @@ a.danger {
 }
 
 input.ng-invalid.ng-touched {
-  border: 1px solid red;
+  border: 2px solid #c36974;
 }

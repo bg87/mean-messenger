@@ -1,15 +1,17 @@
+import { Injectable, EventEmitter } from '@angular/core';
 import { Message } from './message.model';
 import { Http, Response, Headers } from '@angular/http';
-import { Injectable } from '@angular/core';
 import 'rxjs/Rx';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class MessageService {
   private messages: Message[] = [];
+  messageIsEdit = new EventEmitter<Message>();
   
   constructor(private http: Http) {}
 
+  // Save a message
   addMessage(message: Message) {
     this.messages.push(message);
     // Assign json message body
@@ -26,7 +28,8 @@ export class MessageService {
            .catch((error: Response) => Observable.throw(error.json()));
   }
 
-  getMessage() {
+  // Get all messages
+  getMessages() {
     return this.http.get('http://localhost:3000/message')
            .map((response: Response) => {
              const messages = response.json().obj;
@@ -34,7 +37,7 @@ export class MessageService {
              // Loop over our messages object and push the contents of each message
              // to transformedMessages array.
              for (let message of messages) {
-                transformedMessages.push(new Message(message.content, message.id, 'Dummy', null));
+                transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
              }
              this.messages = transformedMessages;
              // Return messages array.
@@ -43,6 +46,17 @@ export class MessageService {
            .catch((error: Response) => Observable.throw(error.json()));
   }
 
+  // Get selected message to prefill message input
+  editMessage(message: Message) {
+    this.messageIsEdit.emit(message);
+  }
+
+  // Update edited message
+  updateMessage(message: Message) {
+    
+  }
+
+  // Delete a message
   deleteMessage(message: Message) {
     this.messages.splice(this.messages.indexOf(message), 1);
   }

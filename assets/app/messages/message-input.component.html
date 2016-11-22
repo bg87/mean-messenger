@@ -2,14 +2,17 @@
   <form (ngSubmit)="onSubmit(f)" #f="ngForm">
     <div class="form-group">
      <label for="content">Content</label>
+     <!-- If message is not undefined prefill input with message.content -->
       <input type="text" 
              id="content" 
-             class="form-control" 
-             ngModel
+             class="form-control"
+             [ngModel]="message?.content"
              name="content"
              autofocus=true
              required/>
     </div>
-    <button class='btn btn-default' type="submit" >Save</button>
+
+    <button class='btn btn-primary' type="submit" >Save</button>
+    <button type="button" class="btn btn-danger" (click)="onClear(f)">Clear</button>
   </form>
 </div>

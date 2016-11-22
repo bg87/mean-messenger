@@ -1,7 +1,7 @@
 var express = require('express');
 var router  = express.Router();
 var User    = require('../models/user');
-var bcrypt  = require('bcrypt');
+var bcrypt  = require('bcryptjs');
 
 router.post('/', function (req, res, next) {
     // Create user object from req

@@ -74,5 +74,11 @@ export class MessageService {
   // Delete a message
   deleteMessage(message: Message) {
     this.messages.splice(this.messages.indexOf(message), 1);
+    // Set up observable. Doesn't send the request yet. The post will be sent when we
+    // subscribe to the observable in the component that calls addMessage.
+    return this.http.delete('http://localhost:3000/message/' + message.messageId)
+            // Map the response into something usable
+           .map((response: Response) => response.json())
+           .catch((error: Response) => Observable.throw(error.json()));
   }
 }

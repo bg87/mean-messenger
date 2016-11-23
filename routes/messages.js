@@ -1,5 +1,6 @@
 var express = require('express');
 var router  = express.Router();
+var jwt     = require('jsonwebtoken');
 var Message = require('../models/message');
 
 // Get messages
@@ -17,6 +18,20 @@ router.get('/', function(req, res, nex) {
                 obj: messages
               });
            });
+});
+
+// Authenticate user before accessing routes below
+router.use('/', function(req, res, next) {
+  jwt.verify(req.query.token, 'secret', function(err, decoded) {
+    if(err) {
+      return res.status(401).json({
+        title: 'Not authenticated',
+        error: err
+      });
+    }
+    // Continue if authenticated
+    next();
+  });
 });
 
 // Store new message
@@ -71,7 +86,7 @@ router.patch('/:id', function(req, res, next) {
   });
 });
 
-// Delet message
+// Delete message
 router.delete('/:id', function(req, res, next) {
   Message.findById(req.params.id, function(err, message) {
     if(err) {

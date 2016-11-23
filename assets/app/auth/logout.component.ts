@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-logout',
@@ -10,7 +12,12 @@ import { Component } from '@angular/core';
 })
 
 export class LogoutComponent {
+
+  constructor(private authService: AuthService, private router: Router) {}
+
   onLogout() {
-    
+    // call logout method and navigate to signin view
+    this.authService.logout();
+    this.router.navigate(['/auth', 'signin']);
   }
 }

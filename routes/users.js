@@ -2,7 +2,7 @@ var express = require('express');
 var router  = express.Router();
 var User    = require('../models/user');
 var bcrypt  = require('bcryptjs');
-var jwt     = requre('jsonwebtoken');
+var jwt     = require('jsonwebtoken');
 
 // Save new user
 router.post('/', function (req, res, next) {

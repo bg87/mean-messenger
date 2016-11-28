@@ -21,7 +21,7 @@ router.get('/', function(req, res, nex) {
            });
 });
 
-// Authenticate user before accessing routes below
+// Authenticate user token before accessing routes below
 router.use('/', function(req, res, next) {
   jwt.verify(req.query.token, 'secret', function(err, decoded) {
     if(err) {
@@ -71,6 +71,9 @@ router.post('/', function (req, res, next) {
 
 // Update message
 router.patch('/:id', function(req, res, next) {
+  // Find user with decoded json web token
+  var decoded = jwt.decode(req.query.token);
+
   Message.findById(req.params.id, function(err, message) {
     if(err) {
       return res.status(500).json({
@@ -84,6 +87,15 @@ router.patch('/:id', function(req, res, next) {
           error: {message: 'Message not found'}
         });
     }
+
+    // if the user associated with the message and the user id are not equal
+    if(message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not authenticated',
+        error: {message: 'Users do not match.'}
+      });
+    }
+
     message.content = req.body.content;
     message.save(function(err, result) {
       if(err) {
@@ -102,6 +114,9 @@ router.patch('/:id', function(req, res, next) {
 
 // Delete message
 router.delete('/:id', function(req, res, next) {
+  // Find user with decoded json web token
+  var decoded = jwt.decode(req.query.token);
+
   Message.findById(req.params.id, function(err, message) {
     if(err) {
       return res.status(500).json({
@@ -115,6 +130,15 @@ router.delete('/:id', function(req, res, next) {
           error: {message: 'Message not found'}
         });
     }
+
+    // if the user associated with the message and the user id are not equal
+    if(message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not authenticated',
+        error: {message: 'Users do not match.'}
+      });
+    }
+
     message.remove(function(err, result) {
       if(err) {
         return res.status(500).json({

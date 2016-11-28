@@ -9,8 +9,8 @@ var schema = new Schema({
 
 // Run when a message is removed
 // Find user by user reference, remove message from user messages and save user
-schema.post('remove', function(message) {
-    User.findById(message.user, function(err, user) {
+schema.post('remove', function (message) {
+    User.findById(message.user, function (err, user) {
         user.messages.pull(message);
         user.save();
     });

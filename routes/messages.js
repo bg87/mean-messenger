@@ -5,20 +5,21 @@ var Message = require('../models/message');
 var User    = require('../models/user');
 
 // Get messages
-router.get('/', function(req, res, nex) {
+router.get('/', function (req, res, next) {
     Message.find()
-           .exec(function(err, messages) {
-              if(err) {
-                  return res.status(500).json({
-                  title: 'There was an error while attempting to get messages.',
-                  error: err
+        .populate('user', 'firstName') // Include user firstName with each message
+        .exec(function (err, messages) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
                 });
-              }
-              res.status(200).json({
-                message: 'success',
+            }
+            res.status(200).json({
+                message: 'Success',
                 obj: messages
-              });
-           });
+            });
+        });
 });
 
 // Authenticate user token before accessing routes below

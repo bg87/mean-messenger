@@ -30,7 +30,11 @@ export class MessageService {
             // Map the response into something usable
            .map((response: Response) => {
              const result = response.json();
-             const message = new Message(result.obj.content, 'Dummy', result.obj._id, null);
+             const message = new Message(
+                    result.obj.content,
+                    result.obj.user.firstName,
+                    result.obj._id,
+                    result.obj.user._id);
              this.messages.push(message);
              return message;
             })
@@ -41,12 +45,18 @@ export class MessageService {
   getMessages() {
     return this.http.get('http://localhost:3000/message')
            .map((response: Response) => {
+             console.log(response);
              const messages = response.json().obj;
              let transformedMessages: Message[] = [];
              // Loop over our messages object and push the contents of each message
              // to transformedMessages array.
              for (let message of messages) {
-                transformedMessages.push(new Message(message.content, 'Dummy', message._id, null));
+                transformedMessages.push(new Message(
+                    message.content, 
+                    message.user.firstName,
+                    message._id,
+                    message.user._id) 
+                    );
              }
              this.messages = transformedMessages;
              // Return messages array.

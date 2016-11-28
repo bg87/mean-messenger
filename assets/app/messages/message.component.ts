@@ -11,18 +11,21 @@ import { MessageService } from './message.service';
 export class MessageComponent {
   @Input() message: Message;
 
-  constructor(private messageService: MessageService) {
-
-  }
+  constructor(private messageService: MessageService) {}
   
-    onEdit() {
-      this.messageService.editMessage(this.message);
-    }
+  onEdit() {
+    this.messageService.editMessage(this.message);
+  }
 
-    onDelete() {
-      this.messageService.deleteMessage(this.message)
-          .subscribe(
-            result => console.log(result)
-          );
-    }
+  onDelete() {
+    this.messageService.deleteMessage(this.message)
+        .subscribe(
+          result => console.log(result)
+        );
+  }
+
+  belongsToUser() {
+    return localStorage.getItem('userId') == this.message.userId;
+  }
+
 }

@@ -2,6 +2,7 @@ var express = require('express');
 var router  = express.Router();
 var jwt     = require('jsonwebtoken');
 var Message = require('../models/message');
+var User    = require('../models/user');
 
 // Get messages
 router.get('/', function(req, res, nex) {
@@ -36,22 +37,35 @@ router.use('/', function(req, res, next) {
 
 // Store new message
 router.post('/', function (req, res, next) {
-    // Create message
-    var message = new Message({
-      content: req.body.content
-    });
-    // Save message and respond
-    message.save(function(err, result) {
-      if(err) {
-        return res.status(500).json({
-          title: 'There was an error while attempting to save a message.',
-          error: err
+    // Find user with decoded json web token
+    var decoded = jwt.decode(req.query.token);
+    User.findById(decoded.user._id, function (err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'An error occurred',
+                error: err
+            });
+        }
+        // Create message with req info
+        var message = new Message({
+            content: req.body.content,
+            user: user
         });
-      }
-      res.status(201).json({
-        message: 'Message saved.',
-        obj: result
-      });
+        message.save(function (err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+            // Add created message to user messages array and save updated user
+            user.messages.push(result);
+            user.save();
+            res.status(201).json({
+                message: 'Saved message',
+                obj: result
+            });
+        });
     });
 });
 

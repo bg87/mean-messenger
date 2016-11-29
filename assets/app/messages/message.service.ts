@@ -1,15 +1,16 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Message } from './message.model';
 import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/Rx';
 import { Observable } from 'rxjs';
+import { Message } from './message.model';
+import { ErrorService } from '../errors/error.service';
 
 @Injectable()
 export class MessageService {
   private messages: Message[] = [];
   messageIsEdit = new EventEmitter<Message>();
   
-  constructor(private http: Http) {}
+  constructor(private http: Http, private errorService: ErrorService) {}
 
   // Save a message
   addMessage(message: Message) {
@@ -38,7 +39,10 @@ export class MessageService {
              this.messages.push(message);
              return message;
             })
-           .catch((error: Response) => Observable.throw(error.json()));
+           .catch((error: Response) => {
+             this.errorService.handleError(error.json());
+             return Observable.throw(error.json());
+           });
   }
 
   // Get all messages
@@ -62,7 +66,10 @@ export class MessageService {
              // Return messages array.
              return transformedMessages;
            })
-           .catch((error: Response) => Observable.throw(error.json()));
+           .catch((error: Response) => {
+             this.errorService.handleError(error.json());
+             return Observable.throw(error.json());
+           });
   }
 
   // Get selected message to prefill message input
@@ -88,7 +95,10 @@ export class MessageService {
     return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: headers})
             // Map the response into something usable
            .map((response: Response) => response.json())
-           .catch((error: Response) => Observable.throw(error.json()));
+           .catch((error: Response) => {
+             this.errorService.handleError(error.json());
+             return Observable.throw(error.json());
+           });
   }
 
   // Delete a message
@@ -105,6 +115,9 @@ export class MessageService {
     return this.http.delete('http://localhost:3000/message/' + message.messageId + token)
             // Map the response into something usable
            .map((response: Response) => response.json())
-           .catch((error: Response) => Observable.throw(error.json()));
+           .catch((error: Response) => {
+             this.errorService.handleError(error.json());
+             return Observable.throw(error.json());
+           });
   }
 }
